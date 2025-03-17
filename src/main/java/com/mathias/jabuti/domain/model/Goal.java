@@ -27,8 +27,6 @@ public class Goal {
   @Id
   private Long id;
 
-  // @JsonIgnore
-
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
   private User user;

@@ -1,10 +1,10 @@
 package com.mathias.jabuti.domain.service;
 
+import com.mathias.jabuti.domain.exception.DuplicatedEntityException;
 import com.mathias.jabuti.domain.exception.EntityNotFoundException;
 import com.mathias.jabuti.domain.model.Goal;
 import com.mathias.jabuti.domain.model.User;
 import com.mathias.jabuti.domain.repository.GoalRepository;
-import com.mathias.jabuti.domain.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -19,39 +19,29 @@ import org.springframework.stereotype.Service;
 @Service
 public class GoalRegistrationService {
 
-	private static final String DUPLICATED_GOAL_ENTRY_MSG = "Duplicated Goal entity";
-
-	private static final String ENTITY_NOT_FOUND_MESSAGE = "Entity %d not found";
-
 	@Autowired
-	private GoalRepository repository;
-
-	@Autowired
-	private UserRepository userRepository;
+	private GoalRepository goalRepository;
 
 	@Autowired
 	private EntityManager manager;
 
-	public Goal create(Goal goal) {
-		if (goal.getId() != null && repository.existsById(goal.getId())) {
-			throw new IllegalArgumentException(DUPLICATED_GOAL_ENTRY_MSG);
-		}
+	@Autowired
+	private UserRegistrationService userService;
+
+	public Goal save(Goal goal) {
 		Long userId = goal.getUser().getId();
-		Optional<User> user = userRepository.findById(userId);
-		if (user.isEmpty()) {
-			String message = String.format(ENTITY_NOT_FOUND_MESSAGE, userId);
-			throw new EntityNotFoundException(message);
-		}
-		return repository.save(goal);
+		User user = userService.findOrFail(userId);
+		goal.setUser(user);
+		return goalRepository.save(goal);
 	}
 
-	public Goal retrieve(Long id) {
-		Optional<Goal> goal = repository.findById(id);
-		if (goal.isEmpty()) {
-			String message = String.format(ENTITY_NOT_FOUND_MESSAGE, id);
-			throw new EntityNotFoundException(message);
-		}
-		return goal.get();
+	public Goal create(Goal goal) {
+		if (goal.getId() != null && goalRepository.existsById(goal.getId())) {
+			throw new DuplicatedEntityException(Goal.class, goal.getId());		}
+		Long userId = goal.getUser().getId();
+		User user = userService.findOrFail(userId);
+		goal.setUser(user);
+		return goalRepository.save(goal);
 	}
 
 	public List<Goal> criteriaCustomQuery(String goalName) {
@@ -65,7 +55,6 @@ public class GoalRegistrationService {
 	}
 
 	public Goal findOrFail(Long goalId) {
-		String message = String.format(ENTITY_NOT_FOUND_MESSAGE, goalId);
-		return repository.findById(goalId).orElseThrow(() -> new EntityNotFoundException(message));
+		return goalRepository.findById(goalId).orElseThrow(() -> new EntityNotFoundException(Goal.class, goalId));
 	}
 }

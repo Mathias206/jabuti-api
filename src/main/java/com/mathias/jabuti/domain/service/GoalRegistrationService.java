@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GoalRegistrationService {
@@ -28,6 +29,7 @@ public class GoalRegistrationService {
 	@Autowired
 	private UserRegistrationService userService;
 
+	@Transactional
 	public Goal save(Goal goal) {
 		Long userId = goal.getUser().getId();
 		User user = userService.findOrFail(userId);
@@ -35,9 +37,11 @@ public class GoalRegistrationService {
 		return goalRepository.save(goal);
 	}
 
+	@Transactional
 	public Goal create(Goal goal) {
 		if (goal.getId() != null && goalRepository.existsById(goal.getId())) {
-			throw new DuplicatedEntityException(Goal.class, goal.getId());		}
+			throw new DuplicatedEntityException(Goal.class, goal.getId());
+		}
 		Long userId = goal.getUser().getId();
 		User user = userService.findOrFail(userId);
 		goal.setUser(user);

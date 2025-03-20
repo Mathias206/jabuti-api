@@ -8,6 +8,8 @@ import com.mathias.jabuti.domain.repository.GoalRepository;
 import com.mathias.jabuti.domain.service.DomainException;
 import com.mathias.jabuti.domain.service.GoalRegistrationService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +42,7 @@ public class GoalController {
   }
 
   @PostMapping
-  public ResponseEntity<?> create(@RequestBody Goal requestGoal) {
+  public ResponseEntity<?> create(@RequestBody @Valid Goal requestGoal) {
     try {
       Goal createdGoal = service.create(requestGoal);
       return ResponseEntity.status(HttpStatus.CREATED).body(createdGoal);

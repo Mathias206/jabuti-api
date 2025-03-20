@@ -49,7 +49,7 @@ public class Goal {
   @Column(name = "goal_description")
   private String description;
 
-  @NotBlank
+  @NotNull
   @Enumerated(EnumType.STRING)
   private GoalType goalType;
 

@@ -7,8 +7,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -35,4 +40,12 @@ public class User {
   @JsonIgnore
   @OneToMany(mappedBy = "user")
   private List<Goal> goals = new ArrayList<>();
+
+  @CreationTimestamp
+  @Column(nullable = false)
+  private OffsetDateTime createdAt;
+
+  @UpdateTimestamp
+  @Column(nullable = false)
+  private OffsetDateTime updatedAt;
 }

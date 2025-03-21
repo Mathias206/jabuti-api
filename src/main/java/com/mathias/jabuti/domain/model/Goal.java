@@ -17,6 +17,8 @@ import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -61,9 +63,9 @@ public class Goal {
 
   @CreationTimestamp
   @Column(nullable = false)
-  private LocalDateTime createdAt;
+  private OffsetDateTime createdAt;
 
   @UpdateTimestamp
   @Column(nullable = false)
-  private LocalDateTime updatedAt;
+  private OffsetDateTime updatedAt;
 }

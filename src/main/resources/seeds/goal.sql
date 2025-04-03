@@ -1,5 +1,4 @@
-INSERT INTO
-  goals (
+INSERT INTO goals(
     id,
     user_id,
     title,
@@ -8,10 +7,10 @@ INSERT INTO
     goal_status,
     goal_priority,
     created_at,
-    updated_at
-  )
-VALUES
-  (
+    updated_at,
+    parent_goal_id
+)
+VALUES(
     1,
     1,
     'Corrida Matinal',
@@ -20,9 +19,9 @@ VALUES
     'PENDING',
     'HIGH',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    2
+),(
     2,
     1,
     'Ler um Livro',
@@ -31,9 +30,9 @@ VALUES
     'IN_PROGRESS',
     'MEDIUM',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    3
+),(
     3,
     2,
     'Finalizar Projeto',
@@ -42,9 +41,9 @@ VALUES
     'PENDING',
     'HIGH',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    4
+),(
     4,
     2,
     'Planejar Viagem',
@@ -53,9 +52,9 @@ VALUES
     'COMPLETED',
     'LOW',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    NULL
+),(
     5,
     3,
     'Rotina de Exercícios',
@@ -64,9 +63,9 @@ VALUES
     'PENDING',
     'HIGH',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    3
+),(
     6,
     4,
     'Aprender Espanhol',
@@ -75,9 +74,9 @@ VALUES
     'IN_PROGRESS',
     'MEDIUM',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    5
+),(
     7,
     5,
     'Economizar Dinheiro',
@@ -86,9 +85,9 @@ VALUES
     'PENDING',
     'HIGH',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    4
+),(
     8,
     6,
     'Cozinha Saudável',
@@ -97,9 +96,9 @@ VALUES
     'IN_PROGRESS',
     'MEDIUM',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    3
+),(
     9,
     7,
     'Meditar',
@@ -108,9 +107,9 @@ VALUES
     'PENDING',
     'HIGH',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    5
+),(
     10,
     8,
     'Trabalho Voluntário',
@@ -119,9 +118,9 @@ VALUES
     'COMPLETED',
     'LOW',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    4
+),(
     11,
     9,
     'Escrever Diário',
@@ -130,9 +129,9 @@ VALUES
     'IN_PROGRESS',
     'MEDIUM',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    NULL
+),(
     12,
     10,
     'Aprender Violão',
@@ -141,9 +140,9 @@ VALUES
     'PENDING',
     'MEDIUM',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    3
+),(
     13,
     3,
     'Melhorar a Dieta',
@@ -152,9 +151,9 @@ VALUES
     'IN_PROGRESS',
     'HIGH',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    NULL
+),(
     14,
     5,
     'Crescimento Profissional',
@@ -163,9 +162,9 @@ VALUES
     'PENDING',
     'HIGH',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    4
+),(
     15,
     7,
     'Networking',
@@ -174,9 +173,9 @@ VALUES
     'PENDING',
     'MEDIUM',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    4
+),(
     16,
     9,
     'Caminhada',
@@ -185,9 +184,9 @@ VALUES
     'IN_PROGRESS',
     'HIGH',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    3
+),(
     17,
     10,
     'Organizar Casa',
@@ -196,9 +195,9 @@ VALUES
     'COMPLETED',
     'LOW',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    NULL
+),(
     18,
     1,
     'Praticar Programação',
@@ -207,9 +206,9 @@ VALUES
     'PENDING',
     'HIGH',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    5
+),(
     19,
     2,
     'Ouvir Podcasts',
@@ -218,9 +217,9 @@ VALUES
     'IN_PROGRESS',
     'MEDIUM',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  ),
-  (
+    UTC_TIMESTAMP,
+    3
+),(
     20,
     6,
     'Desintoxicação Digital',
@@ -229,15 +228,16 @@ VALUES
     'PENDING',
     'HIGH',
     UTC_TIMESTAMP,
-    UTC_TIMESTAMP
-  )
+    UTC_TIMESTAMP,
+    5
+)
 ON DUPLICATE KEY UPDATE
-  user_id = VALUES(user_id),
-  title = VALUES(title),
-  goal_description = VALUES(goal_description),
-  goal_type = VALUES(goal_type),
-  goal_status = VALUES(goal_status),
-  goal_priority = VALUES(goal_priority),
-  created_at = VALUES(created_at),
-  updated_at = VALUES(updated_at);
-
+  user_id = VALUES(user_id), 
+  title = VALUES(title), 
+  goal_description = VALUES(goal_description), 
+  goal_type = VALUES(goal_type), 
+  goal_status = VALUES(goal_status), 
+  goal_priority = VALUES(goal_priority), 
+  created_at = VALUES(created_at), 
+  updated_at = VALUES(updated_at), 
+  parent_goal_id = VALUES(parent_goal_id);

@@ -42,6 +42,8 @@ public class GoalController {
     @Autowired
     private GoalDTODisassembler goalDTODisassembler;
 
+    @Autowired
+    private GoalStatusProcessService goalStatusProcessService;
     @GetMapping
     public List<GoalDTO> list() {
         return goalDTOAssembler.toCollectionModel(repository.findAll());

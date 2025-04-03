@@ -3,6 +3,7 @@ package com.mathias.jabuti.api.assembler;
 import com.mathias.jabuti.api.model.input.GoalInputDTO;
 import com.mathias.jabuti.domain.model.Goal;
 import com.mathias.jabuti.domain.model.User;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,6 @@ public class GoalDTODisassembler {
         instance of com.mathias.jabuti.domain.model.User was altered from 2 to 1
          */
         goal.setUser(new User());
-
         modelMapper.map(goalInputDTO, goal);
 
     }

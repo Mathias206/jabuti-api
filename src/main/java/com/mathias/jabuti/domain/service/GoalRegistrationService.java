@@ -3,6 +3,7 @@ package com.mathias.jabuti.domain.service;
 import com.mathias.jabuti.domain.exception.DuplicatedEntityException;
 import com.mathias.jabuti.domain.exception.EntityNotFoundException;
 import com.mathias.jabuti.domain.model.Goal;
+import com.mathias.jabuti.domain.model.GoalType;
 import com.mathias.jabuti.domain.model.User;
 import com.mathias.jabuti.domain.repository.GoalRepository;
 import jakarta.persistence.EntityManager;
@@ -13,8 +14,6 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +35,11 @@ public class GoalRegistrationService {
         Long userId = goal.getUser().getId();
         User user = userService.findOrFail(userId);
         goal.setUser(user);
+
+        Long parentGoalId = goal.getParentGoal().getId();
+        Goal parentGoal = findOrFail(parentGoalId);
+        goal.setParentGoal(parentGoal);
+
         return goalRepository.save(goal);
     }
 
@@ -47,6 +51,11 @@ public class GoalRegistrationService {
         Long userId = goal.getUser().getId();
         User user = userService.findOrFail(userId);
         goal.setUser(user);
+
+        Long parentGoalId = goal.getParentGoal().getId();
+        Goal parentGoal = findOrFail(parentGoalId);
+        validateParentGoal(parentGoal, goal);
+        goal.setParentGoal(parentGoal);
         return goalRepository.save(goal);
     }
 
@@ -70,5 +79,36 @@ public class GoalRegistrationService {
             throw new EntityNotFoundException(Goal.class, goalId);
         }
         goalRepository.deleteById(goalId);
+    }
+
+    public void validateParentGoal(Goal parentGoal, Goal goal) {
+
+        GoalType parentGoalType = parentGoal.getGoalType();
+
+        switch (goal.getGoalType()) {
+            case DAILY:
+                if (!parentGoalType.equals(GoalType.WEEKLY)) {
+                    throw new DomainException("DAILY goals must have a WEEKLY parent.");
+                }
+                break;
+            case WEEKLY:
+                if (!parentGoalType.equals(GoalType.MONTHLY)) {
+                    throw new DomainException("WEEKLY goals must have a MONTHLY parent.");
+                }
+                break;
+            case MONTHLY:
+                if (!parentGoalType.equals(GoalType.ANNUAL)) {
+                    throw new DomainException("MONTHLY goals must have an ANNUAL parent.");
+                }
+                break;
+            case ANNUAL:
+                if (parentGoalType != null) {
+                    throw new DomainException("ANNUAL goals should not have a parent.");
+                }
+                break;
+            default:
+                throw new DomainException("Unknown GoalType: " + parentGoalType);
+        }
+
     }
 }

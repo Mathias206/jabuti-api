@@ -67,4 +67,9 @@ public class Goal {
   @UpdateTimestamp
   @Column(nullable = false)
   private OffsetDateTime updatedAt;
+
+  @ManyToOne
+  @JoinColumn(name = "parent_goal_id", nullable = true)
+  private Goal parentGoal;
+
 }

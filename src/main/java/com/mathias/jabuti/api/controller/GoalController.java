@@ -93,4 +93,10 @@ public class GoalController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{goalId}/pending")
+    public ResponseEntity<?> toPending(@PathVariable("goalId") Long goalId) {
+        goalStatusProcessService.toPending(goalId);
+        return ResponseEntity.ok().build();
+    }
 }

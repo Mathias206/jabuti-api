@@ -13,6 +13,7 @@ import com.mathias.jabuti.domain.repository.GoalRepository;
 import com.mathias.jabuti.domain.service.DomainException;
 import com.mathias.jabuti.domain.service.GoalRegistrationService;
 
+import com.mathias.jabuti.domain.service.GoalStatusProcessService;
 import jakarta.validation.Valid;
 
 import java.util.List;

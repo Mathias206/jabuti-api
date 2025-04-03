@@ -67,10 +67,10 @@ public class GoalController {
         }
     }
 
-
     @GetMapping("/specifications")
     public List<Goal> getWithSpecifications() {
-        return repository.findAll(goalStatus(GoalStatus.PENDING).and(goalPriority(GoalPriority.MEDIUM)));
+        return repository.findAll(goalStatus(GoalStatus.PENDING)
+            .and(goalPriority(GoalPriority.MEDIUM)));
     }
 
     @GetMapping("/customJpaRepository")

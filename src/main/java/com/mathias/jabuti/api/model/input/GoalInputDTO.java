@@ -27,5 +27,8 @@ public class GoalInputDTO {
     private GoalPriority goalPriority;
 
     @NotNull
-    private UserIdDTO user;
+    private UserIdInputDTO user;
+
+    private ParentGoalIdInputDTO parentGoal;
+    
 }

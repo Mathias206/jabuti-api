@@ -10,5 +10,8 @@ public class GoalDTO {
     private Long id;
     private String title;
     private String description;
-    private Long userId;
+    private String goalStatus;
+    private String goalPriority;
+    private String goalType;
+    private ParentGoalDTO parentGoal;
 }

@@ -13,13 +13,16 @@ import com.mathias.jabuti.domain.repository.GoalRepository;
 import com.mathias.jabuti.domain.service.DomainException;
 import com.mathias.jabuti.domain.service.GoalRegistrationService;
 
+import com.mathias.jabuti.domain.service.GoalStatusProcessService;
 import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,9 +45,15 @@ public class GoalController {
     @Autowired
     private GoalDTODisassembler goalDTODisassembler;
 
+    @Autowired
+    private GoalStatusProcessService goalStatusProcessService;
+
     @GetMapping
-    public List<GoalDTO> list() {
-        return goalDTOAssembler.toCollectionModel(repository.findAll());
+    public Page<GoalDTO> list(Pageable pageable) {
+        Page<Goal> goals = repository.findAll(pageable);
+        List<GoalDTO> goalsDTO = goalDTOAssembler.toCollectionModel(goals.getContent());
+        Page<GoalDTO> goalDTOPage = new PageImpl<>(goalsDTO, pageable, goals.getTotalElements());
+        return goalDTOPage;
     }
 
     @GetMapping("/{goalId}")
@@ -64,10 +73,10 @@ public class GoalController {
         }
     }
 
-
     @GetMapping("/specifications")
     public List<Goal> getWithSpecifications() {
-        return repository.findAll(goalStatus(GoalStatus.PENDING).and(goalPriority(GoalPriority.MEDIUM)));
+        return repository.findAll(goalStatus(GoalStatus.PENDING)
+            .and(goalPriority(GoalPriority.MEDIUM)));
     }
 
     @GetMapping("/customJpaRepository")
@@ -92,5 +101,11 @@ public class GoalController {
         service.delete(goalId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{goalId}/pending")
+    public ResponseEntity<?> toPending(@PathVariable("goalId") Long goalId) {
+        goalStatusProcessService.toPending(goalId);
+        return ResponseEntity.ok().build();
     }
 }

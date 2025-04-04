@@ -14,4 +14,5 @@ public class ChildGoalDTO {
     private String goalStatus;
     private String goalPriority;
     private String goalType;
+    private Long goalParentId;
 }

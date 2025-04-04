@@ -3,6 +3,7 @@ package com.mathias.jabuti.api.controller;
 import com.mathias.jabuti.api.assembler.ChildGoalDTOAssembler;
 import com.mathias.jabuti.api.assembler.GoalDTOAssembler;
 import com.mathias.jabuti.api.assembler.GoalDTODisassembler;
+import com.mathias.jabuti.api.assembler.ParentChildGoalDTOAssembler;
 import com.mathias.jabuti.api.model.ChildGoalDTO;
 import com.mathias.jabuti.api.model.GoalDTO;
 import com.mathias.jabuti.api.model.input.GoalInputDTO;
@@ -10,7 +11,6 @@ import com.mathias.jabuti.domain.exception.EntityNotFoundException;
 import com.mathias.jabuti.domain.model.Goal;
 import com.mathias.jabuti.domain.model.GoalPriority;
 import com.mathias.jabuti.domain.model.GoalStatus;
-import com.mathias.jabuti.domain.model.User;
 import com.mathias.jabuti.domain.repository.GoalRepository;
 import com.mathias.jabuti.domain.service.DomainException;
 import com.mathias.jabuti.domain.service.GoalRegistrationService;
@@ -81,7 +81,7 @@ public class GoalController {
     @GetMapping("/specifications")
     public List<Goal> getWithSpecifications() {
         return repository.findAll(goalStatus(GoalStatus.PENDING)
-            .and(goalPriority(GoalPriority.MEDIUM)));
+                .and(goalPriority(GoalPriority.MEDIUM)));
     }
 
     @GetMapping("/customJpaRepository")
@@ -117,10 +117,9 @@ public class GoalController {
     @GetMapping("/{goalId}/child-goals")
     public Page<ChildGoalDTO> getChildrenGoals(@PathVariable("goalId") Long goalId, Pageable pageable) {
         Goal goal = service.findOrFail(goalId);
-        Page<Goal> childGoals = repository.findByParentGoalId(goal.getId(), pageable);
-        List<ChildGoalDTO> goalsDTO = childGoalDTOAssembler.toCollectionModel(childGoals.getContent());
-        Page<ChildGoalDTO> goalDTOPage = new PageImpl<>(goalsDTO, pageable, childGoals.getTotalElements());
+        Page<Goal> childGoalsPage = repository.findByParentGoalId(goal.getId(), pageable);
+        List<ChildGoalDTO> childGolsDTO = childGoalDTOAssembler.toCollectionModel(childGoalsPage.getContent());
+        Page<ChildGoalDTO> goalDTOPage = new PageImpl<>(childGolsDTO, pageable, childGoalsPage.getTotalElements());
         return goalDTOPage;
-
     }
 }

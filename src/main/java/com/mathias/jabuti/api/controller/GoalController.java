@@ -1,7 +1,9 @@
 package com.mathias.jabuti.api.controller;
 
+import com.mathias.jabuti.api.assembler.ChildGoalDTOAssembler;
 import com.mathias.jabuti.api.assembler.GoalDTOAssembler;
 import com.mathias.jabuti.api.assembler.GoalDTODisassembler;
+import com.mathias.jabuti.api.model.ChildGoalDTO;
 import com.mathias.jabuti.api.model.GoalDTO;
 import com.mathias.jabuti.api.model.input.GoalInputDTO;
 import com.mathias.jabuti.domain.exception.EntityNotFoundException;
@@ -47,6 +49,9 @@ public class GoalController {
 
     @Autowired
     private GoalStatusProcessService goalStatusProcessService;
+
+    @Autowired
+    private ChildGoalDTOAssembler childGoalDTOAssembler;
 
     @GetMapping
     public Page<GoalDTO> list(Pageable pageable) {
@@ -107,5 +112,15 @@ public class GoalController {
     public ResponseEntity<?> toPending(@PathVariable("goalId") Long goalId) {
         goalStatusProcessService.toPending(goalId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{goalId}/child-goals")
+    public Page<ChildGoalDTO> getChildrenGoals(@PathVariable("goalId") Long goalId, Pageable pageable) {
+        Goal goal = service.findOrFail(goalId);
+        Page<Goal> childGoals = repository.findByParentGoalId(goal.getId(), pageable);
+        List<ChildGoalDTO> goalsDTO = childGoalDTOAssembler.toCollectionModel(childGoals.getContent());
+        Page<ChildGoalDTO> goalDTOPage = new PageImpl<>(goalsDTO, pageable, childGoals.getTotalElements());
+        return goalDTOPage;
+
     }
 }

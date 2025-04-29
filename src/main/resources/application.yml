@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: jabuti-api
+  datasource:
+    url: jdbc:mysql://localhost:3306/jabuti-db?ServerTimezone=UTC
+    username: user
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true		
+
+logging:
+  level:
+    org.springframework.security: debug
+
+jwt:
+  secret: chave-super-secreta-que-ninguem-pode-descobrir

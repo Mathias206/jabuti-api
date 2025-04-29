@@ -1,0 +1,2 @@
+ALTER TABLE users
+    ADD COLUMN user_password VARCHAR(255) NOT NULL;

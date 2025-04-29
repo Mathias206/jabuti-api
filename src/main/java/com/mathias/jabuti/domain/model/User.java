@@ -48,4 +48,7 @@ public class User {
   @UpdateTimestamp
   @Column(nullable = false)
   private OffsetDateTime updatedAt;
+
+  @Column(name="user_password", nullable = false)
+  private String password;
 }

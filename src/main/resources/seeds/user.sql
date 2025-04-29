@@ -13,6 +13,5 @@ VALUES
   (10, 'Jane Doe', 'jane@example.com', "$2a$10$rhGna/6YNlAID3nP6dYOVe2nUyVGBhs4JGy4VjXbYlumdFAhb2jti", UTC_TIMESTAMP, UTC_TIMESTAMP)
 ON DUPLICATE KEY UPDATE
   user_name = VALUES(user_name),
-  email = VALUES(email);
-  user_password = VALUES(user_password)
-
+  email = VALUES(email),
+  user_password = VALUES(user_password);

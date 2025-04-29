@@ -3,7 +3,6 @@ package com.mathias.jabuti.api.controller;
 import com.mathias.jabuti.api.assembler.ChildGoalDTOAssembler;
 import com.mathias.jabuti.api.assembler.GoalDTOAssembler;
 import com.mathias.jabuti.api.assembler.GoalDTODisassembler;
-import com.mathias.jabuti.api.assembler.ParentChildGoalDTOAssembler;
 import com.mathias.jabuti.api.model.ChildGoalDTO;
 import com.mathias.jabuti.api.model.GoalDTO;
 import com.mathias.jabuti.api.model.input.GoalInputDTO;

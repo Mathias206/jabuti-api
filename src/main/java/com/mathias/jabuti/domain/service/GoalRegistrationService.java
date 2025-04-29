@@ -55,6 +55,7 @@ public class GoalRegistrationService {
         Long parentGoalId = goal.getParentGoal().getId();
         Goal parentGoal = findOrFail(parentGoalId);
         validateParentGoal(parentGoal, goal);
+        
         goal.setParentGoal(parentGoal);
         return goalRepository.save(goal);
     }

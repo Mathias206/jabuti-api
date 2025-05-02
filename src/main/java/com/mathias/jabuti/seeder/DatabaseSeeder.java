@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.sql.DataSource;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
@@ -15,7 +17,14 @@ public class DatabaseSeeder implements CommandLineRunner {
 
   private final DataSource dataSource;
 
-  private static final List<String> SQL_FILES = Arrays.asList("seeds/user.sql", "seeds/goal.sql");
+  private static final List<String> SQL_FILES = Arrays.asList(
+    "seeds/user.sql", 
+    "seeds/goal.sql",
+    "seeds/permissions.sql",
+    "seeds/groups.sql",
+    "seeds/group_permission.sql",
+    "seeds/user_group.sql"
+    );
 
   public static final String ANSI_GREEN = "\u001B[32m";
   public static final String ANSI_BLUE = "\u001B[34m";
@@ -26,6 +35,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     this.dataSource = dataSource;
   }
 
+  // mvn spring-boot:run -Dspring-boot.run.arguments="seed"
   @Override
   public void run(String... args) throws Exception {
     if (args.length > 0 && args[0].equals("seed")) {

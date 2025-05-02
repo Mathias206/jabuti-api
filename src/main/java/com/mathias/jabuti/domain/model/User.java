@@ -51,4 +51,9 @@ public class User {
 
   @Column(name="user_password", nullable = false)
   private String password;
+
+  @JoinTable(name="user_group", joinColumns = @JoinColumn(name="user_id"), 
+    inverseJoinColumns = @JoinColumn(name="group_id"))
+  @ManyToMany
+  private List<Group> groups = new ArrayList<>();
 }

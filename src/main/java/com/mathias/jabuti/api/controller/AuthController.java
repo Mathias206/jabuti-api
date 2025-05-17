@@ -28,8 +28,7 @@ public class AuthController {
 		this.jwtUtil = jwtUtil;
 	}
 	
-	// TODO: mudar para /token
-	@PostMapping("/login")
+	@PostMapping("/token")
 	public ResponseEntity<?> entrar(@RequestBody LoginRequestDTO request) {
 		var credentials = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
 		var auth = authenticationManager.authenticate(credentials);

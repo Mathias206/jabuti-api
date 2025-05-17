@@ -9,7 +9,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -55,5 +57,5 @@ public class User {
   @JoinTable(name="user_group", joinColumns = @JoinColumn(name="user_id"), 
     inverseJoinColumns = @JoinColumn(name="group_id"))
   @ManyToMany
-  private List<Group> groups = new ArrayList<>();
+  private Set<Group> groups = new HashSet<>();
 }

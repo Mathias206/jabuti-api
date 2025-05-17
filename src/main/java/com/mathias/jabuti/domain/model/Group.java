@@ -1,7 +1,7 @@
 package com.mathias.jabuti.domain.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,6 +34,6 @@ public class Group {
     @JoinTable(name = "group_permission", joinColumns = @JoinColumn(name = "group_id"), 
         inverseJoinColumns = @JoinColumn(name = "permission_id"))
     @ManyToMany
-    private List<Permission> permissions = new ArrayList<>();
+    private Set<Permission> permissions = new HashSet<>();
 
 }

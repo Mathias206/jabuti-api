@@ -1,18 +1,29 @@
 package com.mathias.jabuti.core.security.filter;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.mathias.jabuti.api.model.UserEmailPasswordProjection;
 import com.mathias.jabuti.core.security.AuthUser;
 import com.mathias.jabuti.core.security.JpaUserDetailsService;
 import com.mathias.jabuti.core.security.JwtUtil;
+import com.mathias.jabuti.domain.model.User;
+import com.mathias.jabuti.domain.repository.UserRepository;
 
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -30,10 +41,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
 
+    private UserRepository userRepository;
 
-    public JwtAuthFilter(JpaUserDetailsService jpaUserDetailsService, JwtUtil jwtUtil) {
+
+    public JwtAuthFilter(JpaUserDetailsService jpaUserDetailsService, JwtUtil jwtUtil, UserRepository userRepository) {
         this.jpaUserDetailsService = jpaUserDetailsService;
         this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -45,9 +59,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
             try {
+
                 var username = extractUsername(jwt);
+                var authorities = toGrantedAuthority(jwtUtil.getAuthorities(jwt));
+
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    AuthUser userDetails = (AuthUser) jpaUserDetailsService.loadUserByUsername(username);
+                    var user = userRepository.findByEmailProjected(username)
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                    var userDetails = new AuthUser(user.getId(), user.getEmail(), user.getPassword(), authorities);
+                    
                     if (isTokenValid(jwt, userDetails)) {
                         var authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
@@ -64,6 +84,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+
         return;
 
     }
@@ -81,5 +102,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		String username = extractUsername(token);
 		return username.equals(userDetails.getUsername());
 	}
+
+    public Collection<GrantedAuthority> toGrantedAuthority(List<String> authorities) {
+        return authorities.stream()
+            .map(authoritie -> new SimpleGrantedAuthority(authoritie))
+            .collect(Collectors.toSet());
+    }
 
 }

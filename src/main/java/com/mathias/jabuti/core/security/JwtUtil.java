@@ -1,6 +1,7 @@
 package com.mathias.jabuti.core.security;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,9 +18,8 @@ public class JwtUtil {
 	@Value("${jwt.secret}")
 	private String jwtSecret;
 
-	// TODO: adicionar as permissoes do usuario no jwt (pegar do auth user)
 	public String generateToken(AuthUser authUser) {
-		var authorities = authUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+		var authorities = authUser.getAuthorities().stream().map(auth -> auth.getAuthority()).toList();
 
 		return Jwts.builder()
 				.setSubject(authUser.getUsername())
@@ -37,6 +37,10 @@ public class JwtUtil {
 
 	public Long extractUserId(String token) {
 		return extractAllClaims(token).get("user_id", Long.class);
+	}
+
+	public List<String> getAuthorities(String token) {
+		return (List<String>) extractAllClaims(token).get("authorities");
 	}
 
 	public Claims extractAllClaims(String token) {

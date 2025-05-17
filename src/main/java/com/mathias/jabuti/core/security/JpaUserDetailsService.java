@@ -2,9 +2,11 @@ package com.mathias.jabuti.core.security;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,12 +24,14 @@ public class JpaUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new AuthUser(user, Collections.emptyList());
+        return new AuthUser(user, getAuthorities(user));
     }
 
-    // TODO: carregar as permissoes do banco de dados
     public Collection<GrantedAuthority> getAuthorities(User user) {
-        return null;
+        return user.getGroups().stream()
+            .flatMap(grupo -> grupo.getPermissions().stream()
+            .map(permission -> new SimpleGrantedAuthority(permission.getName())))
+            .collect(Collectors.toSet());
     }
 
 }

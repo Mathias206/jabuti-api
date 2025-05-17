@@ -12,6 +12,11 @@ public class AuthUser extends User {
 
     private Long userId;
 
+    public AuthUser(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+        super(email, password, authorities);
+        this.userId = id;
+    }
+
     public AuthUser(com.mathias.jabuti.domain.model.User user, Collection<? extends GrantedAuthority> authorities) {
         super(user.getEmail(), user.getPassword(), authorities);
         this.userId = user.getId();
